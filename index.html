@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎤 MCP Speech Chatbot - GitHub Pages</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .chat-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 800px;
+            height: 80vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        
+        .chat-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .chat-header h1 {
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+        
+        .chat-header p {
+            opacity: 0.9;
+            font-size: 14px;
+        }
+        
+        .chat-messages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            background: #f8f9fa;
+        }
+        
+        .message {
+            margin-bottom: 15px;
+            display: flex;
+            align-items: flex-start;
+        }
+        
+        .message.user {
+            justify-content: flex-end;
+        }
+        
+        .message.bot {
+            justify-content: flex-start;
+        }
+        
+        .message-content {
+            max-width: 70%;
+            padding: 12px 16px;
+            border-radius: 18px;
+            word-wrap: break-word;
+        }
+        
+        .message.user .message-content {
+            background: #667eea;
+            color: white;
+        }
+        
+        .message.bot .message-content {
+            background: white;
+            color: #333;
+            border: 1px solid #e0e0e0;
+        }
+        
+        .message-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            margin: 0 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+        }
+        
+        .user-icon {
+            background: #667eea;
+            color: white;
+        }
+        
+        .bot-icon {
+            background: #28a745;
+            color: white;
+        }
+        
+        .chat-input {
+            padding: 20px;
+            background: white;
+            border-top: 1px solid #e0e0e0;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        
+        .input-group {
+            flex: 1;
+            display: flex;
+            gap: 10px;
+        }
+        
+        .text-input {
+            flex: 1;
+            padding: 12px 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 25px;
+            font-size: 16px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+        
+        .text-input:focus {
+            border-color: #667eea;
+        }
+        
+        .btn {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 25px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #5a6fd8;
+            transform: translateY(-2px);
+        }
+        
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+        
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .demo-notice {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+            padding: 15px;
+            margin: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        
+        .demo-notice h3 {
+            margin-bottom: 10px;
+            color: #856404;
+        }
+        
+        .demo-notice p {
+            margin-bottom: 10px;
+        }
+        
+        .demo-notice .btn {
+            background: #667eea;
+            color: white;
+            text-decoration: none;
+            display: inline-block;
+            margin: 5px;
+        }
+        
+        .demo-notice .btn:hover {
+            background: #5a6fd8;
+        }
+        
+        .features {
+            background: white;
+            padding: 20px;
+            margin: 20px;
+            border-radius: 10px;
+            border: 1px solid #e0e0e0;
+        }
+        
+        .features h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+        
+        .features ul {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .features li {
+            padding: 8px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .features li:before {
+            content: "✅ ";
+            color: #28a745;
+        }
+    </style>
+</head>
+<body>
+    <div class="chat-container">
+        <div class="chat-header">
+            <h1>🎤 MCP Speech Chatbot</h1>
+            <p>Your AI assistant with voice capabilities for weather, stocks, and news</p>
+        </div>
+        
+        <div class="chat-messages" id="chatMessages">
+            <div class="message bot">
+                <div class="message-icon bot-icon">🤖</div>
+                <div class="message-content">
+                    Hello! I'm your MCP chatbot with speech capabilities. I can help you with weather, stocks, and news information. 
+                    You can type your questions or use the microphone to speak!
+                </div>
+            </div>
+            
+            <div class="demo-notice">
+                <h3>🚀 Demo Version</h3>
+                <p>This is a static demo version hosted on GitHub Pages. For full functionality including speech recognition and real-time data, please run the chatbot locally.</p>
+                <a href="https://github.com/mdontula/mcp-chatbot" class="btn" target="_blank">📁 View Source Code</a>
+                <a href="https://github.com/mdontula/mcp-chatbot#readme" class="btn" target="_blank">📖 Read Documentation</a>
+            </div>
+            
+            <div class="features">
+                <h3>✨ Features</h3>
+                <ul>
+                    <li>Speech-to-Text using Google Cloud APIs</li>
+                    <li>Text-to-Speech for responses</li>
+                    <li>Real-time weather information</li>
+                    <li>Live stock market data</li>
+                    <li>Latest news headlines</li>
+                    <li>Multiple interface options</li>
+                    <li>MCP protocol integration</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="chat-input">
+            <div class="input-group">
+                <input type="text" id="messageInput" class="text-input" 
+                       placeholder="Type your message (demo mode - no backend connection)" 
+                       onkeypress="handleKeyPress(event)">
+                
+                <button id="sendBtn" class="btn btn-primary" onclick="sendMessage()">
+                    📤 Send
+                </button>
+            </div>
+            
+            <button id="micBtn" class="btn btn-secondary" onclick="showDemoMessage()">
+                🎤 Mic
+            </button>
+        </div>
+    </div>
+    
+    <script>
+        // Demo mode - no real backend connection
+        function addMessage(message, sender) {
+            const chatMessages = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${sender}`;
+            
+            const icon = sender === 'user' ? '👤' : '🤖';
+            const iconClass = sender === 'user' ? 'user-icon' : 'bot-icon';
+            
+            messageDiv.innerHTML = `
+                <div class="message-icon ${iconClass}">${icon}</div>
+                <div class="message-content">${message}</div>
+            `;
+            
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+        
+        function sendMessage() {
+            const input = document.getElementById('messageInput');
+            const message = input.value.trim();
+            
+            if (!message) return;
+            
+            addMessage(message, 'user');
+            input.value = '';
+            
+            // Demo response
+            setTimeout(() => {
+                addMessage("This is a demo version hosted on GitHub Pages. For full functionality, please run the chatbot locally using the instructions in the README.", 'bot');
+            }, 1000);
+        }
+        
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        }
+        
+        function showDemoMessage() {
+            addMessage("🎤 Microphone functionality requires the full chatbot running locally with Google Cloud Speech APIs. Check the README for setup instructions!", 'bot');
+        }
+        
+        // Add some demo interactions
+        window.onload = function() {
+            setTimeout(() => {
+                addMessage("💡 Try typing: 'weather in Tokyo', 'stock price of AAPL', or 'news on technology'", 'bot');
+            }, 2000);
+        };
+    </script>
+</body>
+</html>
