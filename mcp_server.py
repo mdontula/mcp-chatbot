@@ -191,7 +191,9 @@ class MCPServer:
     async def run(self):
         """Run the MCP server"""
         # Validate API keys
-        Config.validate_api_keys()
+        api_valid = Config.validate_api_keys()
+        if not api_valid:
+            print("⚠️  Warning: Some API keys are invalid. The service may not work properly.")
         
         # Start the server
         async with stdio_server() as (read_stream, write_stream):

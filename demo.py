@@ -159,7 +159,9 @@ def main():
     
     # Check API keys
     print("\n🔑 Checking API keys...")
-    Config.validate_api_keys()
+    api_valid = Config.validate_api_keys()
+    if not api_valid:
+        print("⚠️  Warning: Some API keys are invalid. The service may not work properly.")
     
     try:
         # Run demos

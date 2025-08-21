@@ -412,7 +412,9 @@ async def health_check():
 
 if __name__ == "__main__":
     # Validate API keys before starting
-    Config.validate_api_keys()
+    api_valid = Config.validate_api_keys()
+    if not api_valid:
+        print("⚠️  Warning: Some API keys are invalid. The service may not work properly.")
     
     print("Starting MCP Chatbot Web Interface...")
     print(f"Server will be available at: http://{Config.HOST}:{Config.PORT}")
