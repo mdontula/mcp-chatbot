@@ -1,0 +1,47 @@
+version: '3.8'
+
+services:
+  mcp-chatbot:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      - HOST=0.0.0.0
+      - PORT=8000
+      # Add your API keys here or use a .env file
+      - OPENWEATHER_API_KEY=${OPENWEATHER_API_KEY}
+      - ALPHA_VANTAGE_API_KEY=${ALPHA_VANTAGE_API_KEY}
+      - NEWS_API_KEY=${NEWS_API_KEY}
+    volumes:
+      # Mount source code for development
+      - .:/app
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import requests; requests.get('http://localhost:8000/health')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Optional: Add Redis for caching (uncomment if needed)
+  # redis:
+  #   image: redis:alpine
+  #   ports:
+  #     - "6379:6379"
+  #   restart: unless-stopped
+
+  # Optional: Add PostgreSQL for data persistence (uncomment if needed)
+  # postgres:
+  #   image: postgres:13
+  #   environment:
+  #     POSTGRES_DB: mcp_chatbot
+  #     POSTGRES_USER: mcp_user
+  #     POSTGRES_PASSWORD: mcp_password
+  #   ports:
+  #     - "5432:5432"
+  #   volumes:
+  #     - postgres_data:/var/lib/postgresql/data
+  #   restart: unless-stopped
+
+# volumes:
+#   postgres_data:
